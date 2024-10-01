@@ -14,7 +14,7 @@ class KerasCNN:
                            loss=losses.SparseCategoricalCrossentropy(from_logits=True),
                            metrics=['accuracy'])
 
-    def add_input_convolution_layer(self, filters: int, input_shape: tuple(int, int, int)):
+    def add_input_convolution_layer(self, filters: int, input_shape: tuple([int, int, int])):
         self.model.add(layers.Conv2D(filters=filters,
                                      kernel_size=(2, 2),
                                      activation='relu',
