@@ -30,9 +30,11 @@ class KerasCNN:
         self.model.add(layers.MaxPool2D(2, 2))
 
     def train(self, training_set):
-        self.model.train(training_set)
-        self.model.fit(training_set.image, training_set.label, epochs=10,
-                       validation_data=(training_set.image, training_set.label))
+        history = self.model.fit(training_set.images, training_set.labels, epochs=10,
+                       validation_data=(training_set.images, training_set.labels))
+        print(history)
+
 
     def test(self, testing_set):
-        self.model.evaluate(testing_set.image, testing_set.label)
+        eval = self.model.evaluate(testing_set.images, testing_set.labels)
+        print(eval)
