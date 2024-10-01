@@ -2,8 +2,8 @@ from keras import models, layers, losses
 
 
 class KerasCNN:
-    def __init__(self, input_image_size, input_channels, num_conv_layers):
-        self.model = models.Sequencial()
+    def __init__(self, input_image_size, input_channels, num_conv_layers, output_categories):
+        self.model = models.Sequential()
         self.add_input_convolution_layer(16, (input_image_size[0], input_image_size[1], input_channels))
         for i in range(num_conv_layers - 1):
             self.add_convolution_layer(8)
