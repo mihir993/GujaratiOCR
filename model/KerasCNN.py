@@ -9,7 +9,7 @@ class KerasCNN:
             self.add_convolution_layer(8)
         self.model.add(layers.Flatten())
         self.model.add(layers.Dense(8, input_dim=4, activation='relu'))
-        self.model.add(layers.Dense(3, activation='softmax'))
+        self.model.add(layers.Dense(output_categories, activation='softmax'))
         self.model.compile(optimizer='adam',
                            loss=losses.SparseCategoricalCrossentropy(from_logits=True),
                            metrics=['accuracy'])
