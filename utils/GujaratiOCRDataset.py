@@ -1,7 +1,7 @@
 import os
 
-from utils.ImageDataSet import ImageDataSet
 from utils.PathToData import PathToData
+from keras import utils as kutils
 
 
 class GujaratiOCRDataset:
@@ -10,11 +10,27 @@ class GujaratiOCRDataset:
         training_path = os.path.join(root_path, "data_set", "Gujarati", "Train")
         testing_path = os.path.join(root_path, "data_set", "Gujarati", "Test")
         self.data_path = PathToData(training_path, testing_path)
-        self.training = self.get_training_data_set()
+        self.training, self.valid = self.get_training_data_set()
         self.testing = self.get_testing_data_set()
 
     def get_training_data_set(self):
-        return ImageDataSet(self.data_path.path_training_data)
+        train, valid = kutils.image_dataset_from_directory(self.data_path.path_training_data,
+                                                           labels="inferred",
+                                                           label_mode="categorical",
+                                                           color_mode="grayscale",
+                                                           batch_size=32,
+                                                           image_size=(32, 32),
+                                                           seed=42,
+                                                           validation_split=0.2,
+                                                           subset='both',
+                                                           verbose=True)
+        return train, valid
 
     def get_testing_data_set(self):
-        return ImageDataSet(self.data_path.path_testing_data)
+        return kutils.image_dataset_from_directory(self.data_path.path_testing_data,
+                                                   labels="inferred",
+                                                   label_mode="categorical",
+                                                   color_mode="grayscale",
+                                                   batch_size=32,
+                                                   image_size=(32, 32),
+                                                   verbose=True)
