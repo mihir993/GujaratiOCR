@@ -1,5 +1,6 @@
 from keras import models, layers, losses
 from keras import utils as kutils
+import matplotlib.pyplot as plt
 
 kutils.set_random_seed(812)
 
@@ -35,15 +36,27 @@ class KerasCNN:
     def train(self, training_set):
         history = self.model.fit(training_set.images,
                                  self.encode_labels(training_set),
-                                 epochs=10,  verbose=True,
+                                 epochs=10,  verbose=1, batch_size=15,
                                  validation_data=(training_set.images, self.encode_labels(training_set))
                                  )
         print(history)
+        self.plot_training_history(history)
 
     def test(self, testing_set):
         eval = self.model.evaluate(testing_set.images,
-                                   self.encode_labels(testing_set))
+                                   self.encode_labels(testing_set),
+                                   verbose=1,
+                                   return_dict=True)
         print(eval)
 
     def encode_labels(self, data):
         return self.label_encoder.transform(data.labels.reshape(-1, 1)).toarray()
+
+    def plot_training_history(self, history):
+        plt.plot(history.history['accuracy'], label='accuracy')
+        plt.plot(history.history['val_accuracy'], label='val_accuracy')
+        plt.xlabel('Epoch')
+        plt.ylabel('Accuracy')
+        plt.ylim([0.5, 1])
+        plt.legend(loc='lower right')
+        plt.show()

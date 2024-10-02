@@ -20,7 +20,7 @@ class ImageDataSet:
         self.images = np.empty(shape=(0, 32, 32, 3))
         self.labels = np.empty(shape=0)
         for _, folders, _ in os.walk(path_to_dataset):
-            for folder in folders:
+            for folder in folders[0:2]:
                 label = folder
                 folder_path = os.path.join(path_to_dataset, folder)
                 for _, _, files in os.walk(folder_path):
