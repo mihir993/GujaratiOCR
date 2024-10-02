@@ -4,15 +4,18 @@ import matplotlib.pyplot as plt
 
 kutils.set_random_seed(812)
 
+
 class KerasCNN:
-    def __init__(self, input_image_sample, num_conv_layers, output_categories):
+    def __init__(self, input_shape, num_conv_layers, output_categories):
         self.label_encoder =None
         self.model = models.Sequential()
-        self.add_input_convolution_layer(16, input_image_sample.shape)
+        self.add_input_convolution_layer(64, input_shape)
         for i in range(num_conv_layers - 1):
-            self.add_convolution_layer(8)
+            self.add_convolution_layer(32)
         self.model.add(layers.Flatten())
-        self.model.add(layers.Dense(8, input_dim=4, activation='relu'))
+        self.model.add(layers.Dense(300, activation='relu'))
+        self.model.add(layers.Dense(250, activation='relu'))
+        self.model.add(layers.Dense(150, activation='relu'))
         self.model.add(layers.Dense(output_categories, activation='softmax'))
         self.model.compile(optimizer='adam',
                            loss=losses.categorical_crossentropy,
@@ -33,18 +36,18 @@ class KerasCNN:
                                      ))
         self.model.add(layers.MaxPool2D(2, 2))
 
-    def train(self, training_set):
-        history = self.model.fit(training_set.images,
-                                 self.encode_labels(training_set),
+    def train(self, training_set, validation_set=None):
+        if not validation_set:
+            validation_set = training_set
+        history = self.model.fit(training_set,
                                  epochs=10,  verbose=1, batch_size=15,
-                                 validation_data=(training_set.images, self.encode_labels(training_set))
+                                 validation_data=validation_set
                                  )
         print(history)
         self.plot_training_history(history)
 
     def test(self, testing_set):
-        eval = self.model.evaluate(testing_set.images,
-                                   self.encode_labels(testing_set),
+        eval = self.model.evaluate(testing_set,
                                    verbose=1,
                                    return_dict=True)
         print(eval)
@@ -59,4 +62,5 @@ class KerasCNN:
         plt.ylabel('Accuracy')
         plt.ylim([0.5, 1])
         plt.legend(loc='lower right')
+        plt.savefig("../training_progress.png")
         plt.show()
