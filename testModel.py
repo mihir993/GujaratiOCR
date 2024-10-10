@@ -21,8 +21,8 @@ def test(model, testing_set):
 
 
 if __name__ == '__main__':
-    path_weight = "./model.weights.h5"
-    path_model = "./model.keras"
+    path_weight = "./model_saved/model.weights.h5"
+    path_model = "./model_saved/model.keras"
     cnn_model = load_saved_model(path_model, path_weight)
     print(cnn_model.summary())
     data_set = get_data_set()

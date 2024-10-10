@@ -20,6 +20,6 @@ if __name__ == '__main__':
     print("------------> training finished")
     cnn_model.test(data_set.testing)
     print("------------> testing finished")
-    cnn_model.model.save("./model.keras")
-    cnn_model.model.save_weights("./model.weights.h5")
+    cnn_model.model.save("./model_saved/model.keras")
+    cnn_model.model.save_weights("./model_saved/model.weights.h5")
     print("finished saving")
