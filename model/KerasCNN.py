@@ -1,21 +1,22 @@
-from keras import models, layers, losses
+from keras import models, layers, losses, callbacks
 from keras import utils as kutils
 import matplotlib.pyplot as plt
 
-kutils.set_random_seed(812)
+kutils.set_random_seed(740)
 
 
 class KerasCNN:
     def __init__(self, input_shape, num_conv_layers, output_categories):
         self.label_encoder =None
         self.model = models.Sequential()
-        self.add_input_convolution_layer(64, input_shape)
-        for i in range(num_conv_layers - 1):
-            self.add_convolution_layer(32)
+        self.add_input_convolution_layer(12, input_shape)
+        self.add_convolution_layer(36)
+        self.add_convolution_layer(72)
         self.model.add(layers.Flatten())
-        self.model.add(layers.Dense(300, activation='relu'))
-        self.model.add(layers.Dense(250, activation='relu'))
-        self.model.add(layers.Dense(150, activation='relu'))
+        self.model.add(layers.Dense(750, activation='relu'))
+        self.model.add(layers.Dropout(0.4))
+        self.model.add(layers.Dense(500, activation='relu'))
+        self.model.add(layers.Dropout(0.2))
         self.model.add(layers.Dense(output_categories, activation='softmax'))
         self.model.compile(optimizer='adam',
                            loss=losses.categorical_crossentropy,
@@ -39,9 +40,21 @@ class KerasCNN:
     def train(self, training_set, validation_set=None):
         if not validation_set:
             validation_set = training_set
+
+        callback = callbacks.EarlyStopping(
+            monitor="val_loss",
+            min_delta=0,
+            patience=3,
+            verbose=0,
+            mode="auto",
+            baseline=None,
+            restore_best_weights=True,
+            start_from_epoch=0,
+        )
         history = self.model.fit(training_set,
-                                 epochs=10,  verbose=1, batch_size=15,
-                                 validation_data=validation_set
+                                 epochs=25,  verbose=1, batch_size=15,
+                                 validation_data=validation_set,
+                                 callbacks=[callback]
                                  )
         print(history)
         self.plot_training_history(history)
@@ -63,4 +76,4 @@ class KerasCNN:
         plt.ylim([0.5, 1])
         plt.legend(loc='lower right')
         plt.savefig("../training_progress.png")
-        plt.show()
+        # plt.show()
